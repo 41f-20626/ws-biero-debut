@@ -19,15 +19,15 @@ class BiereControlleur
 	 * @param Requete $oReq
 	 * @return Mixed Données retournées
 	 */
-	public function getAction(Requete $requete)
+	public function getAction(Requete $oReq)
 	{
-		if(isset($requete->url_elements[0]) && is_numeric($requete->url_elements[0]))	// Normalement l'id de la biere 
+		if(isset($oReq->url_elements[0]) && is_numeric($oReq->url_elements[0]))	// Normalement l'id de la biere 
 		{
-			$id_biere = (int)$requete->url_elements[0];
+			$id_biere = (int)$oReq->url_elements[0];
 			
-			if(isset($requete->url_elements[1])) 
+			if(isset($oReq->url_elements[1])) 
 			{
-				switch($requete->url_elements[1]) 
+				switch($oReq->url_elements[1]) 
 				{
 					case 'commentaire':
 						$this->retour["data"] = $this->getCommentaire($id_biere);
