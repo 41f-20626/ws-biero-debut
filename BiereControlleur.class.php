@@ -78,10 +78,35 @@ class BiereControlleur
 	 */
 	public function putAction(Requete $oReq)		//ajout ou modification
 	{
-		var_dump($oReq);
+		//var_dump($oReq);
 		if(!$this->valideAuthentification())
 		{
 			$this->retour['erreur'] = $this->erreur(401);
+		}
+		else 
+		{
+			if(isset($oReq->url_elements[0]) && is_numeric($oReq->url_elements[0])) // Normalement l'id de la bière
+			{
+				$id_biere = (int)$oReq->url_elements[0];
+			
+				if(isset($oReq->url_elements[1])) 
+				{
+					switch($oReq->url_elements[1]) 
+					{
+						case 'commentaire':
+							//$this->retour["data"] = $this->getCommentaire($id_biere);
+							break;
+						case 'note':
+							$this->retour["data"] = $this->setNote($id_biere, $oReq->parametres);
+							break;
+						default:
+							$this->retour['erreur'] = $this->erreur(400);
+							unset($this->retour['data']);
+							break;
+					}
+				} 
+			}
+			
 		}
 		
 		return $this->retour;
@@ -153,11 +178,26 @@ class BiereControlleur
 	 */	
 	private function getNote($id_biere)
 	{
-		
 		$res = Array();
+		$oNote = new Note();
+		$res = $oNote->getMoyenne($id_biere);
 		return $res; 
 	}
 	
+	private function setNote($id_biere, $donnees){
+		$res = array();
+
+		$oUsager = new Usager();
+		$id_usager = $oUsager->ajouterUsager($donnees['courriel']);
+		var_dump($id_biere);
+		$oNote = new Note();
+		$res = $oNote->ajouterNote($id_usager, $id_biere, $donnees['note'] );
+
+		return $res;
+	}
+	
+
+
 	/**
 	 * Valide les données d'authentification du service web
 	 * @return Boolean Si l'authentification est valide ou non
